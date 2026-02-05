@@ -1,7 +1,7 @@
 package com.example.blog.controllers;
 
 import com.example.blog.dtos.BlogPostRequest;
-import com.example.blog.entities.BlogPost;
+import com.example.blog.dtos.BlogPostResponse;
 import com.example.blog.services.BlogPostService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,19 +18,19 @@ public class BlogPostController {
   private final BlogPostService blogPostService;
 
   @GetMapping
-  public List<BlogPost> getAllBlogPosts(
+  public List<BlogPostResponse> getAllBlogPosts(
       @RequestParam(value = "term", required = false) String searchTerm) {
     return blogPostService.getAllBlogPosts(searchTerm);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<BlogPost> getBlogPostById(@PathVariable Long id) {
+  public ResponseEntity<BlogPostResponse> getBlogPostById(@PathVariable Long id) {
     var blogPost = blogPostService.getBlogPostById(id);
     return ResponseEntity.ok(blogPost);
   }
 
   @PostMapping
-  public ResponseEntity<BlogPost> createBlogPost(
+  public ResponseEntity<BlogPostResponse> createBlogPost(
       @RequestBody @Valid BlogPostRequest request, UriComponentsBuilder builder) {
     var blogPost = blogPostService.createBlogPost(request);
     var location = builder.path("/posts/{id}").buildAndExpand(blogPost.getId()).toUri();
@@ -38,7 +38,7 @@ public class BlogPostController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<BlogPost> updateBlogPost(
+  public ResponseEntity<BlogPostResponse> updateBlogPost(
       @PathVariable Long id, @RequestBody @Valid BlogPostRequest request) {
     var blogPost = blogPostService.updateBlogPost(id, request);
     return ResponseEntity.ok(blogPost);
